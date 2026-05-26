@@ -4,7 +4,7 @@ Tareas pendientes ordenadas por prioridad. Cuando se arranca una, se mueve a `in
 
 ## Sesión 1 — Setup inicial (Día 1, hoy)
 
-- [ ] **T-001** Crear repo en GitHub e inicializarlo localmente
+- [x] **T-001** Crear repo en GitHub e inicializarlo localmente
 - [ ] **T-002** Crear proyecto en Supabase (free tier) y obtener credenciales
 - [ ] **T-003** Crear proyecto en Vercel y conectarlo al repo de GitHub
 - [ ] **T-004** Inicializar Next.js 14 con App Router, TypeScript estricto, Tailwind, shadcn/ui base

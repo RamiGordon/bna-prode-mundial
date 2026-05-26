@@ -6,7 +6,7 @@
 
 ## Estado actual: NINGUNA TAREA EN PROGRESO
 
-Próximo paso: levantar T-001 del `backlog.md` y empezar la primera sesión.
+Próximo paso: levantar **T-002 (Crear proyecto en Supabase)** del `backlog.md`.
 
 ---
 
