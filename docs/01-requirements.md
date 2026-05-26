@@ -61,9 +61,9 @@ Estas predicciones se cargan **antes** del partido inaugural y no se pueden modi
 - RF-15: Las 4 selecciones que llegan a semifinales (sin orden).
 - RF-16: Deadline duro: 11/06/2026 a las 19:00 ART (kickoff del partido inaugural). Después de eso, los bonus quedan congelados aunque el usuario no los haya cargado.
 
-### 3.4 Sistema de puntajes (a confirmar con el grupo)
+### 3.4 Sistema de puntajes (confirmado)
 
-Propuesta base, ajustable antes del 11/6:
+Reglas confirmadas con el grupo. **Fuente canónica: `docs/04-scoring-rules.md` (FROZEN).** Resumen acá:
 
 **Partidos de fase de grupos:**
 - Acertar resultado exacto: **5 puntos**
@@ -71,8 +71,13 @@ Propuesta base, ajustable antes del 11/6:
 - Acertar solo ganador/empate: **2 puntos**
 - No acertar: 0 puntos
 
-**Partidos de eliminación directa (octavos en adelante):**
-- Mismos puntos pero multiplicados ×1.5 (octavos), ×2 (cuartos), ×2.5 (semis), ×3 (final).
+**Partidos de eliminación directa (multiplicador sobre puntos base):**
+- 32avos: ×1.0
+- 16avos (octavos): ×1.5
+- Cuartos: ×2.0
+- Semifinales: ×2.5
+- Tercer puesto: ×1.5
+- Final: ×3.0
 - En partidos definidos por penales, vale el resultado al final de los 90/120 min (no se cuenta la tanda).
 
 **Bonus:**
@@ -80,6 +85,8 @@ Propuesta base, ajustable antes del 11/6:
 - Subcampeón: 10 puntos
 - Goleador: 15 puntos
 - Cada semifinalista acertado: 5 puntos (máximo 20)
+
+**Desempates en ranking final:** definidos en `docs/04-scoring-rules.md` (resultados exactos → campeón → goleador → puntos eliminatoria → sorteo).
 
 - RF-17: Las reglas del puntaje deben estar visibles en una pantalla "Reglas" dentro de la app, congeladas antes del kickoff inaugural.
 - RF-18: El cálculo de puntajes se ejecuta automáticamente al cargar un resultado oficial.
@@ -293,9 +300,9 @@ Razones:
 
 ## 11. Decisiones pendientes (a resolver antes del 11/6)
 
-- [ ] Validar el sistema de puntajes con el grupo. Que voten o aprueben.
+- [x] ~~Validar el sistema de puntajes con el grupo.~~ Confirmado. Ver `docs/04-scoring-rules.md`.
 - [ ] Definir entrada del pozo y mecanismo de cobro (fuera de la app).
-- [ ] Definir desempate en caso de empate en el ranking final.
+- [x] ~~Definir desempate en caso de empate en el ranking final.~~ Definido en `docs/04-scoring-rules.md`.
 - [ ] Nombre y dominio de la app. Algunas opciones: `prode26.app`, `elprode.ar`, `prodemundial.com`.
 - [ ] Logo (¿colaboración con Agustina?).
 
