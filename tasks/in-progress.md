@@ -6,7 +6,7 @@
 
 ## Estado actual: NINGUNA TAREA EN PROGRESO
 
-Próximo paso: levantar **T-002 (Crear proyecto en Supabase)** del `backlog.md`.
+Próximo paso: levantar **T-003 (Crear proyecto en Vercel y conectarlo al repo de GitHub)** del `backlog.md`.
 
 ---
 

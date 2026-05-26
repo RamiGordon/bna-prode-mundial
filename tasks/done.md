@@ -27,3 +27,12 @@ Registro append-only de tareas terminadas. Última al final. Útil para ver prog
   - Sistema de puntajes confirmado con el grupo: `docs/04-scoring-rules.md` queda como fuente canónica; `docs/01-requirements.md` alineado.
 - Bugs encontrados: ninguno.
 - Commits relevantes: 08405ad (docs alignment previo a T-001).
+
+## T-002 — Crear proyecto en Supabase y obtener credenciales (2026-05-26)
+- Resumen: proyecto `bna-prode-mundial` creado en Supabase free tier, org `rami-personal`, region South America (São Paulo, `sa-east-1`). Project ref `amfinktznidqxcaoxwdf`. Credenciales (Project URL, anon key, service_role key, DB password, Direct connection string, Transaction pooler connection string) capturadas y guardadas por Rami en su password manager — nada commiteado al repo.
+- Decisiones tomadas:
+  - Region **São Paulo** por ser la más cercana a AR (menor latencia para los usuarios).
+  - Se guardaron **dos** connection strings: **Direct** (puerto 5432, para correr migraciones desde local en T-009) y **Transaction pooler** (puerto 6543, para runtime serverless desde Vercel). La elección final entre pooler modes la decidimos cuando arranque T-009.
+  - Credenciales fuera del repo. Se meten en `.env.local` recién en T-005.
+- Bugs encontrados: ninguno, pero la UI de Supabase cambió respecto a guías viejas — las connection strings ahora viven detrás del botón verde **"Connect"** arriba en el dashboard, no en `Project Settings → Database` como antes. A tener en cuenta si en sesiones futuras hay que volver a buscarlas.
+- Commits relevantes: solo el commit de cierre de la tarea.
