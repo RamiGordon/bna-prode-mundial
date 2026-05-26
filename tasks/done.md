@@ -36,3 +36,12 @@ Registro append-only de tareas terminadas. Última al final. Útil para ver prog
   - Credenciales fuera del repo. Se meten en `.env.local` recién en T-005.
 - Bugs encontrados: ninguno, pero la UI de Supabase cambió respecto a guías viejas — las connection strings ahora viven detrás del botón verde **"Connect"** arriba en el dashboard, no en `Project Settings → Database` como antes. A tener en cuenta si en sesiones futuras hay que volver a buscarlas.
 - Commits relevantes: solo el commit de cierre de la tarea.
+
+## T-003 — Crear proyecto en Vercel y conectarlo al repo de GitHub (2026-05-26, 12:06-12:15)
+- Resumen: proyecto `bna-prode-mundial` creado en Vercel, linkeado al repo `RamiGordon/bna-prode-mundial` con production branch = `main`. URL pública asignada: `bna-prode-mundial.vercel.app`. Framework preset = Next.js (en anticipación a T-004). Variables de entorno vacías (se cargan en T-005).
+- Decisiones tomadas:
+  - **Framework preset = Next.js desde el import**, aceptando que el primer deploy iba a fallar (el repo todavía no tiene `package.json`). Alternativa descartada: usar "Other" y cambiar después. Se eligió Next.js para que el primer push de T-004 deploye limpio sin tener que volver a settings.
+  - **Root Directory = `/`** (default). No hay monorepo.
+  - **No se tocó env vars.** Verificado explícitamente que la lista está vacía. Las vars de Supabase entran en T-005.
+- Bugs encontrados: ninguno. El deploy fallado contra el commit `693497c` confirma que el webhook GitHub → Vercel está activo y reaccionando a `main`. Es el estado esperado hasta T-004.
+- Commits relevantes: solo el commit de cierre de la tarea.

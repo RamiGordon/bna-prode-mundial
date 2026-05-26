@@ -6,7 +6,7 @@
 
 ## Estado actual: NINGUNA TAREA EN PROGRESO
 
-Próximo paso: levantar **T-003 (Crear proyecto en Vercel y conectarlo al repo de GitHub)** del `backlog.md`.
+Próximo paso: levantar **T-004 (Inicializar Next.js 14 con App Router, TypeScript estricto, Tailwind, shadcn/ui base)** del `backlog.md`.
 
 ---
 
