@@ -7,7 +7,7 @@ Tareas pendientes ordenadas por prioridad. Cuando se arranca una, se mueve a `in
 - [x] **T-001** Crear repo en GitHub e inicializarlo localmente
 - [x] **T-002** Crear proyecto en Supabase (free tier) y obtener credenciales
 - [x] **T-003** Crear proyecto en Vercel y conectarlo al repo de GitHub
-- [ ] **T-004** Inicializar Next.js (latest) con App Router, TypeScript estricto, Tailwind, shadcn/ui base
+- [x] **T-004** Inicializar Next.js (latest) con App Router, TypeScript estricto, Tailwind, shadcn/ui base
 - [ ] **T-005** Configurar `.env.local` y `.env.example` con variables de Supabase
 
 ## Sesión 2 — Auth y navegación (Día 2)

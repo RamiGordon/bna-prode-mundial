@@ -45,3 +45,19 @@ Registro append-only de tareas terminadas. Última al final. Útil para ver prog
   - **No se tocó env vars.** Verificado explícitamente que la lista está vacía. Las vars de Supabase entran en T-005.
 - Bugs encontrados: ninguno. El deploy fallado contra el commit `693497c` confirma que el webhook GitHub → Vercel está activo y reaccionando a `main`. Es el estado esperado hasta T-004.
 - Commits relevantes: solo el commit de cierre de la tarea.
+
+## T-004 — Inicializar Next.js con TypeScript, Tailwind, ESLint y shadcn/ui base (2026-05-26 → 2026-05-27)
+- Resumen: scaffold de **Next.js 16.2.6** (latest stable) con App Router, React 19.2.4, TypeScript estricto, Tailwind v4, ESLint 9, layout `src/`, import alias `@/*`. shadcn/ui inicializado con preset default (`base-nova` + `lucide` + CSS variables), sin componentes. Node 24 LTS pineado en `.nvmrc`. Build local OK y deploy verde en Vercel para `d3a686e` → `https://bna-prode-mundial-c5vtus6pv-ramigordons-projects.vercel.app`. 9 referencias a "Next.js 14" actualizadas en docs/tasks/README.
+- Decisiones tomadas:
+  - **Subir de Next 14 a latest (16.2.6)** y rescribir CLAUDE.md, README.md, los 4 docs y el ADR 0001 para no quedar pegados a una versión obsoleta antes de escribir una línea de código. Se agregó nota de amendment en el ADR para mantener trazabilidad.
+  - **Scaffold vía directorio temporal + `rsync`** (no `create-next-app .` directo). Más predecible: garantiza que no se pisen `CLAUDE.md`, `README.md` ni `.gitignore` existentes. La CLI quería generar su propio CLAUDE.md (sólo apuntaba a `AGENTS.md`) y su propio README genérico, los descartamos.
+  - **Mantener `AGENTS.md`** que genera el scaffold (advertencia de Next 16 sobre breaking changes vs training data de agentes). Convive con CLAUDE.md sin conflicto: uno es framework-level, otro es project-level.
+  - **`tsconfig.json` con `noUncheckedIndexedAccess: true`** además de `strict: true`. Más seguro para acceso a arrays/objetos (relevante para listas de partidos, predicciones, ranking).
+  - **shadcn preset = default `base-nova`** porque el viejo sistema de "slate/zinc/neutral" como flag de CLI ya no existe — ahora son presets nombrados. El default usa oklch neutral puro (sin tinte azul de slate viejo). **Cambio pendiente:** si en alguna pantalla queremos tinte slate, se editan ~10 líneas de CSS variables en `src/app/globals.css`.
+  - **Borrado del `Button` auto-instalado** por el preset shadcn (`src/components/ui/button.tsx`) para honrar "sin componentes todavía". Las deps que se instalaron quedan (se usarán cuando se agregue el primer componente real).
+  - **nvm vía Homebrew**, no script curl. Estaba instalado en `/opt/homebrew/opt/nvm 0.40.4` pero sin cargar en el shell; lo cargué en cada Bash call con `source`. Rami tiene pendiente agregar las export lines a su `~/.zshrc` para que esté disponible en sesiones nuevas (`brew info nvm` las imprime).
+  - **package manager = npm** (default). Vercel acepta ambos; mover a pnpm es trivial si después aparece la necesidad.
+- Bugs encontrados:
+  - `npm audit` reporta 2 vulns moderate en `postcss <8.5.10` (sub-dep de Next). El auto-fix querría downgradear Next a 9.3.3 (rotísimo). El vuln (XSS via `</style>` en stringify) sólo se dispara si el build procesa CSS con input de usuario, que no es nuestro caso. Se resuelve cuando Next bumpee postcss en una minor.
+  - Vercel UI del proyecto no tiene Node version explícita — el deploy salió verde con el default que asume Vercel. Pendiente fijarla en `24` para alinear con `.nvmrc` (lo hace Rami via Project Settings → General → Node.js Version).
+- Commits relevantes: 32dccd6 c046e3b 6fd57b3 d3a686e + commit de cierre.
