@@ -9,7 +9,7 @@ Hay que elegir stack para una PWA de prode con deadline duro a 16 días, constru
 
 ## Decisión
 
-- **Frontend:** Next.js 14 con App Router, TypeScript estricto, Tailwind + shadcn/ui.
+- **Frontend:** Next.js (latest stable, App Router), TypeScript estricto, Tailwind + shadcn/ui.
 - **Backend/DB:** Supabase (Postgres + Auth + RLS).
 - **Hosting:** Vercel.
 
@@ -53,3 +53,7 @@ Hay que elegir stack para una PWA de prode con deadline duro a 16 días, constru
 
 - Backups regulares de la DB de Supabase (export semanal en SQL).
 - Documentar bien las decisiones que dependen de Supabase para facilitar migración si algún día hace falta.
+
+## Notas
+
+- **2026-05-26 (T-004):** El scaffold se hizo con Next.js 16.2.6 (latest stable al momento), React 19.2.4, Tailwind v4. La decisión original mencionaba "Next.js 14" pero se actualizó a "latest stable" para no quedar pegados a una versión específica durante el desarrollo activo.

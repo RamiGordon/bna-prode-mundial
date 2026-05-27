@@ -1,6 +1,6 @@
 # Prode Mundial 2026
 
-PWA para jugar al prode del Mundial 2026 entre amigos. Stack: Next.js 14 + Supabase + Vercel.
+PWA para jugar al prode del Mundial 2026 entre amigos. Stack: Next.js (latest) + Supabase + Vercel.
 
 ## Setup local
 

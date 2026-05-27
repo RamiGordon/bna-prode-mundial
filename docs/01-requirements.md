@@ -131,7 +131,7 @@ Reglas confirmadas con el grupo. **Fuente canónica: `docs/04-scoring-rules.md` 
 
 | Capa | Elección | Por qué |
 |---|---|---|
-| Frontend | Next.js 14 (App Router) + React | Lo conocés, SSR/ISR, deploy en Vercel en un click |
+| Frontend | Next.js (App Router, latest) + React | Lo conocés, SSR/ISR, deploy en Vercel en un click |
 | Estilos | Tailwind CSS + shadcn/ui | Componentes accesibles y configurables, te ahorra días de UI |
 | Backend / DB | Supabase (Postgres + Auth + RLS) | Free tier sobra, Auth con magic link de fábrica, sin escribir API REST |
 | Hosting | Vercel | Ya lo configuraste para Bruma, deploy directo desde GitHub |

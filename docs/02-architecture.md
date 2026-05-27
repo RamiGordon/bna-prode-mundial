@@ -5,7 +5,7 @@
 ```
 ┌─────────────────────────────────────────┐
 │  Cliente (PWA en mobile/desktop)        │
-│  Next.js 14 App Router + React + TW     │
+│  Next.js App Router + React + TW        │
 └────────────────┬────────────────────────┘
                  │ HTTPS
                  ▼
@@ -62,7 +62,7 @@ Para detalle, ver `docs/decisions/`.
 | Decisión | Resumen |
 |---|---|
 | PWA vs nativa | PWA. Distribución por link, deploy instantáneo. |
-| Stack | Next.js 14 + Supabase. Conocido, integrado, free tier suficiente. |
+| Stack | Next.js + Supabase. Conocido, integrado, free tier suficiente. |
 | Cálculo de puntajes | En Postgres (función + trigger). Garantía de integridad. |
 | Carga de resultados | Manual por admin. APIs gratuitas son inconsistentes. |
 | Estado cliente | Mínimo. RSC + Server Actions. Sin Redux, Zustand, Jotai. |

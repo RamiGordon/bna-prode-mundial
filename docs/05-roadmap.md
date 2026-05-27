@@ -10,7 +10,7 @@ Régimen: nights/weekends, full-time en Mercado Libre durante el día.
 - T-001: Crear repo en GitHub
 - T-002: Crear proyecto en Supabase
 - T-003: Crear proyecto en Vercel + conectar a GitHub
-- T-004: Inicializar Next.js 14 con TypeScript + Tailwind + shadcn
+- T-004: Inicializar Next.js (latest) con TypeScript + Tailwind + shadcn
 - T-005: Configurar variables de entorno + .env.example
 
 ### Día 2 — Miércoles 27/5

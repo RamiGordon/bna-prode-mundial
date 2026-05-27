@@ -8,7 +8,7 @@ PWA para que un grupo de 10–20 amigos juegue un prode híbrido (partidos + bon
 
 ## Stack (no cambiar sin discutir)
 
-- **Frontend:** Next.js 14 (App Router), React, TypeScript estricto.
+- **Frontend:** Next.js (App Router, latest stable), React, TypeScript estricto.
 - **Estilos:** Tailwind CSS + shadcn/ui.
 - **Backend/DB:** Supabase (Postgres + Auth con magic link + RLS).
 - **Hosting:** Vercel.
