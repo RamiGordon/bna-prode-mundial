@@ -47,9 +47,20 @@ export async function requestMagicLink(
   });
 
   if (error) {
+    console.error("[auth] signInWithOtp failed", {
+      status: error.status,
+      code: error.code,
+      message: error.message,
+    });
+
+    const isRateLimit =
+      error.status === 429 || error.code === "over_email_send_rate_limit";
+
     return {
       status: "error",
-      message: "No pudimos mandarte el link. Probá de nuevo en un rato.",
+      message: isRateLimit
+        ? "Pediste un link hace muy poco. Esperá un minuto y volvé a intentar."
+        : "No pudimos mandarte el link. Probá de nuevo en un rato.",
     };
   }
 
