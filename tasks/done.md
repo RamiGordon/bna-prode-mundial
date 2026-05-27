@@ -61,3 +61,14 @@ Registro append-only de tareas terminadas. Última al final. Útil para ver prog
   - `npm audit` reporta 2 vulns moderate en `postcss <8.5.10` (sub-dep de Next). El auto-fix querría downgradear Next a 9.3.3 (rotísimo). El vuln (XSS via `</style>` en stringify) sólo se dispara si el build procesa CSS con input de usuario, que no es nuestro caso. Se resuelve cuando Next bumpee postcss en una minor.
   - Vercel UI del proyecto no tiene Node version explícita — el deploy salió verde con el default que asume Vercel. Pendiente fijarla en `24` para alinear con `.nvmrc` (lo hace Rami via Project Settings → General → Node.js Version).
 - Commits relevantes: 32dccd6 c046e3b 6fd57b3 d3a686e + commit de cierre.
+
+## T-005 — Configurar `.env.local` y `.env.example` con variables de Supabase (2026-05-27, 13:12-13:18)
+- Resumen: `.env` renombrado a `.env.local` (convención Next.js). Creado `.env.example` commiteado con la lista de variables y comentarios que explican qué hace cada una y dónde se usa (Vercel vs local-only). `.gitignore` ajustado con `!.env.example` para que la regla amplia `.env*` no lo bloquee. `.env.local` queda fuera del repo como siempre.
+- Decisiones tomadas:
+  - **Nomenclatura nueva de Supabase** (`sb_publishable_*` / `sb_secret_*`), descartando las viejas (anon JWT / service_role JWT). Razón: revocables individualmente sin tener que rotar el JWT signing key de todo el proyecto. Las claves nuevas ya estaban generadas en el dashboard de T-002 — en `done.md` de T-002 quedó registrado con la nomenclatura vieja porque ese era el lenguaje del momento; no se corrige el registro histórico.
+  - **`SUPABASE_DATABASE_URL` queda con la Direct connection (puerto 5432)**, no pooler. No se usa desde Vercel — sólo desde local para migraciones de T-009. Si en T-009 vemos que también necesitamos el pooler, lo agregamos ahí.
+  - **`SUPA_REF` se mantiene** en `.env.local`. Lo usa la Supabase CLI (`supabase link --project-ref $SUPA_REF`) cuando arranquemos T-009. No se sube a Vercel.
+  - **No se crea cliente Supabase ni hay código que consuma las env vars todavía.** Eso entra en T-006 junto con el flow de magic link. Esta tarea es sólo el contrato de variables.
+- Bugs encontrados: ninguno. Detalle: el `.gitignore` original tenía `.env*` como glob amplio, que también ignoraba `.env.example`. Es un default razonable de Next pero requiere el `!.env.example` explícito si querés versionar el template. A tener en cuenta si en el futuro agregamos otros `.env.*` versionables (`.env.test`, etc.).
+- Pendientes off-band para Rami (no bloquean T-006): cargar las 3 vars `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_SUPABASE_SECRET_KEY` en Vercel Project Settings → Environment Variables (production + preview + development). El resto de las vars (SUPA_REF, SUPABASE_DATABASE_URL) NO van a Vercel.
+- Commits relevantes: ec2c289 3748f9a + commit de cierre.
