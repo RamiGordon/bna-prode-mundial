@@ -12,7 +12,6 @@ Próximo paso: levantar **T-006 (Implementar auth con Supabase magic link — lo
 
 - Agregar las export lines de `nvm` al `~/.zshrc` para que `nvm` esté disponible en terminales nuevas. Las imprime `brew info nvm`. (de T-004)
 - Fijar Node version `24` en Vercel Project Settings → General → Node.js Version, para alinear con `.nvmrc`. (de T-004)
-- Cargar las 3 vars públicas de Supabase en Vercel (Project Settings → Environment Variables, production + preview + development): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_SUPABASE_SECRET_KEY`. El resto NO va a Vercel. (de T-005)
 
 ---
 
