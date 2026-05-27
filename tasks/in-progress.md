@@ -6,9 +6,9 @@
 
 ## Estado actual: NINGUNA TAREA EN PROGRESO
 
-Próximo paso: levantar **T-007 (middleware de Next que protege rutas autenticadas)** del `backlog.md`. Continúa Sesión 2 del roadmap.
+Próximo paso: levantar **T-008 (layout base con navegación mobile-first)** del `backlog.md`. Cierra Sesión 2 del roadmap.
 
-### Pendientes off-band heredados (los hace Rami cuando pueda, no bloquean T-007)
+### Pendientes off-band heredados (los hace Rami cuando pueda, no bloquean T-008)
 
 - Agregar las export lines de `nvm` al `~/.zshrc` para que `nvm` esté disponible en terminales nuevas. Las imprime `brew info nvm`. (de T-004)
 
