@@ -11,7 +11,6 @@ Próximo paso: levantar **T-006 (Implementar auth con Supabase magic link — lo
 ### Pendientes off-band heredados (los hace Rami cuando pueda, no bloquean T-006)
 
 - Agregar las export lines de `nvm` al `~/.zshrc` para que `nvm` esté disponible en terminales nuevas. Las imprime `brew info nvm`. (de T-004)
-- Fijar Node version `24` en Vercel Project Settings → General → Node.js Version, para alinear con `.nvmrc`. (de T-004)
 
 ---
 
