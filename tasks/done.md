@@ -72,3 +72,24 @@ Registro append-only de tareas terminadas. Última al final. Útil para ver prog
 - Bugs encontrados: ninguno. Detalle: el `.gitignore` original tenía `.env*` como glob amplio, que también ignoraba `.env.example`. Es un default razonable de Next pero requiere el `!.env.example` explícito si querés versionar el template. A tener en cuenta si en el futuro agregamos otros `.env.*` versionables (`.env.test`, etc.).
 - Pendientes off-band para Rami (no bloquean T-006): cargar las 3 vars `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_SUPABASE_SECRET_KEY` en Vercel Project Settings → Environment Variables (production + preview + development). El resto de las vars (SUPA_REF, SUPABASE_DATABASE_URL) NO van a Vercel. **[✓ hecho por Rami el 2026-05-27]**
 - Commits relevantes: ec2c289 3748f9a + commit de cierre.
+
+## T-006 — Implementar auth con Supabase magic link — login + callback + logout (2026-05-27, 14:18-16:00)
+- Resumen: flow de auth end-to-end con magic link de Supabase. `/login` (server component) + `LoginForm` (único client component, usa `useActionState` de React 19) + server action `requestMagicLink` con validación Zod. `/auth/callback` route handler que intercambia el code por sesión. `/` placeholder autenticado con email + logout. Helper `src/lib/supabase/server.ts` reutilizable en Server Components, Server Actions y Route Handlers. Build verde, test manual end-to-end OK (login → mail → click → logueado → logout → vuelta a /login).
+- Decisiones tomadas:
+  - **Lib `@supabase/ssr` ^0.10.3** (no el deprecado `@supabase/auth-helpers-nextjs`). Resuelve el problema de que las cookies se leen/escriben distinto según el contexto (Server Component vs Server Action vs Route Handler) — vos le pasás funciones `getAll`/`setAll` y la lib se ocupa.
+  - **Un solo helper `createClient()`** que vale para los 3 contextos. El `try/catch` del `setAll` cubre el caso Server Component (donde `cookies()` no permite set). El refresh real de la sesión lo va a hacer el middleware en T-007.
+  - **Browser client NO se agrega todavía.** Ningún Client Component en T-006 necesita hablar con Supabase. Se incorpora cuando aparezca el primer caso (probablemente alguna pantalla con subscriptions realtime).
+  - **API keys = publishable + URL, no la secret.** El flow de auth se autoriza vía cookie del usuario; la secret key (que bypassea RLS) queda reservada para tareas admin futuras (T-024 carga de resultados, etc.).
+  - **`emailRedirectTo` derivado del request, no de env var.** Se lee `host` + `x-forwarded-proto` con `headers()`. Adapta solo a localhost vs preview vs prod sin tener que mantener una `NEXT_PUBLIC_SITE_URL`. Trade-off: depende de que los headers estén bien seteados por Vercel (lo están).
+  - **Mínimo client state.** Sólo `LoginForm` es `"use client"`, todo el resto es server. `useActionState` da pending + estado "te mandamos el link" sin necesidad de fetch.
+  - **Rutas planas**: `/login`, `/auth/callback`, `/`. No route group `(auth)` por ahora — agregaría un nivel sin valor con sólo una página. Se refactorea cuando crezca la sección auth.
+  - **Logout en `src/app/actions.ts`** (action global, único compartido por todas las páginas). Si crecen las actions globales se reorganiza después.
+  - **Home `/` redirige inline a `/login` si no hay user.** Es un preview de lo que va a hacer el middleware en T-007 — pero lo dejamos ya para que el flow cierre. Cuando T-007 meta el middleware se puede simplificar.
+  - **Zod 4: `z.string().email()` clásico** (no el nuevo `z.email()` de zod 4). Más portable y reconocible, sin deprecation warning.
+  - **Sin tests automatizados de auth.** Fuera del criterio del proyecto ("tests donde importan: scoring, validación de cierre de predicciones, RLS").
+- Bugs encontrados:
+  - **Mensaje genérico tapaba el rate-limit de Supabase.** Al loguearse, desloguearse, y pedir otro link al toque, Supabase devuelve 429 (default: 1 magic link por email cada 60s). El error se atrapaba con el mensaje genérico "No pudimos mandarte el link", que confunde porque no aclara que es esperado. Fix en commit `a0b70e7`: detectar `status === 429` o `code === "over_email_send_rate_limit"` y mostrar "Pediste un link hace muy poco. Esperá un minuto." Además se loggea el error real (status/code/message) en server console para diagnosticar errores futuros desconocidos sin adivinar.
+  - **2 moderate vulns en npm audit** siguen ahí — son las de postcss heredadas de Next, ya documentadas en T-004.
+- Pendientes off-band para Rami: ninguno nuevo. Los previos al test ya están cumplidos: ✓ Redirect URLs configuradas en Supabase dashboard (localhost + Vercel). ✓ Test manual end-to-end verificado.
+- Próximo: **T-007 (middleware de Next que protege rutas autenticadas)** abre Sesión 2 / día 2.
+- Commits relevantes: 4185ead c80e6eb b219089 870689a 25ae33a a0b70e7 + commit de cierre.

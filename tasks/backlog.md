@@ -12,9 +12,13 @@ Tareas pendientes ordenadas por prioridad. Cuando se arranca una, se mueve a `in
 
 ## Sesión 2 — Auth y navegación (Día 2)
 
-- [ ] **T-006** Implementar auth con Supabase magic link (login + callback + logout)
+- [x] **T-006** Implementar auth con Supabase magic link (login + callback + logout)
 - [ ] **T-007** Middleware de Next que protege rutas autenticadas
 - [ ] **T-008** Layout base con navegación mobile-first (bottom nav o drawer)
+
+## Auth hardening (a slotear antes del beta — T-038)
+
+- [ ] **T-006a** Definir e implementar mecanismo de allowlist por email. Hoy cualquiera con un email puede pedir un magic link y entrar. Opciones a discutir: (a) tabla `allowed_emails` en Postgres con RLS que niegue la creación de `profiles` si el email no está en la lista, (b) aprobación manual del admin tras primer login, (c) signup invitation-only con tokens. Hay que tomar la decisión y aterrizarla antes de mandar invitaciones al grupo (T-040).
 
 ## Sesión 3 — Schema de datos (Día 3)
 
