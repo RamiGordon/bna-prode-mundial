@@ -85,7 +85,7 @@ src/
 │   ├── ui/                 # shadcn components
 │   └── domain/             # Componentes del dominio (PredictionCard, etc)
 ├── lib/
-│   ├── supabase/           # Cliente, server, middleware
+│   ├── supabase/           # Cliente, server, proxy (session refresh)
 │   ├── scoring/            # Lógica de puntaje (espejo del de Postgres, para tests)
 │   └── utils/
 ├── server-actions/         # Server actions, una por archivo

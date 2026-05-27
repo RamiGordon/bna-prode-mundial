@@ -19,7 +19,7 @@ export async function createClient() {
             });
           } catch {
             // Called from a Server Component, where cookies cannot be set.
-            // Session refresh will be handled by middleware (T-007).
+            // Session refresh is handled by the proxy at src/proxy.ts.
           }
         },
       },

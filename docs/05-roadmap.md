@@ -15,7 +15,7 @@ Régimen: nights/weekends, full-time en Mercado Libre durante el día.
 
 ### Día 2 — Miércoles 27/5
 - T-006: Auth con Supabase magic link funcionando end-to-end
-- T-007: Middleware de protección de rutas autenticadas
+- T-007: Proxy de protección de rutas autenticadas
 - T-008: Layout base con navegación mobile-first
 
 ### Día 3 — Jueves 28/5

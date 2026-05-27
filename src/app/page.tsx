@@ -8,6 +8,8 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Defensive fallback: the proxy should already have redirected,
+  // but if its matcher ever drifts we still refuse to render to anon.
   if (!user) {
     redirect("/login");
   }
