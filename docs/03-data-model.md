@@ -1,5 +1,7 @@
 # 03 — Modelo de datos
 
+> **Última migración alineada:** `supabase/migrations/20260528022319_initial_schema.sql` (T-009, 2026-05-28). Cualquier divergencia entre este doc y el SQL aplicado es un bug — alinear ambos en la misma pasada.
+
 ## Tablas
 
 ### `profiles`
@@ -135,6 +137,8 @@ create table result_changes_log (
 
 **RLS:** SELECT solo admin, INSERT vía trigger, UPDATE/DELETE bloqueados.
 
+**Trigger `log_result_change` (AFTER UPDATE OF `score_a`, `score_b` en `matches`):** inserta una fila acá cada vez que cambia un score, leyendo `changed_by` desde `auth.uid()`. Si la sesión que ejecuta el UPDATE no tiene un user autenticado (ej: queries directas con rol `postgres` desde el SQL editor del dashboard), el trigger **rechaza el cambio con `raise exception`**. Es intencional: no hay cambios de resultado sin auditoría. Para correcciones excepcionales sin sesión hay que usar el service role.
+
 ### `app_config`
 
 Singleton de configuración. Una sola fila.
@@ -145,57 +149,96 @@ create table app_config (
   tournament_start_at timestamptz not null, -- kickoff inaugural
   bonus_lock_at timestamptz not null,       -- cuándo se cierran los bonus
   rules_locked boolean not null default false,
-  scoring_rules jsonb not null              -- las reglas exactas (ver doc 04)
+  scoring_rules jsonb not null              -- shape detallado abajo (ver doc 04)
 );
 ```
 
+**Shape de `scoring_rules`** (la función `calculate_match_points` y el código TS lo asumen exactamente así):
+
+```jsonc
+{
+  "match_points": {
+    "exact": 5,           // pred exacto
+    "winner_and_diff": 3, // misma diferencia de goles (incluye ganador acertado)
+    "winner_or_draw": 2,  // mismo signo (ganador o empate acertado, sin diff exacta)
+    "none": 0
+  },
+  "stage_multipliers": {
+    "group": 1.0, "r32": 1.0, "r16": 1.5,
+    "quarter": 2.0, "semi": 2.5, "third": 1.5, "final": 3.0
+  },
+  "bonus_points": {
+    "champion": 20,
+    "runner_up": 10,
+    "top_scorer": 15,
+    "semifinalist_each": 5   // hasta 4 semifinalistas → máximo 20
+  }
+}
+```
+
+**RLS:** SELECT autenticado, INSERT/UPDATE/DELETE solo admin.
+
 ## Funciones y triggers
+
+### `is_admin(uid uuid) → boolean`
+
+Helper SQL con `security definer` y `search_path = public`. Devuelve `profiles.is_admin` del usuario dado, o `false` si no existe. Centraliza el check de admin en las policies (`teams_admin_cud`, `matches_admin_cud`, `app_config_admin_cud`, `result_changes_log_select_admin`) y evita recursión en las policies de la propia `profiles`.
 
 ### `handle_new_user()`
 
-Trigger en `auth.users` AFTER INSERT. Crea fila en `profiles` con alias = parte local del email.
+Trigger en `auth.users` AFTER INSERT. Crea fila en `profiles` con `alias = split_part(email, '@', 1)`. El alias lo puede editar el usuario después.
+
+### `set_updated_at()`
+
+Trigger genérico BEFORE UPDATE en `predictions` y `bonus_predictions`. Reescribe `updated_at = now()` en cada update. Necesario para honrar la regla del CLAUDE.md: "timestamps inmutables, no se borran ni al editarlas" — sin este trigger, `updated_at` quedaría como `created_at` salvo que el código TS lo seteara explícitamente cada vez.
 
 ### `calculate_match_points(match_id int)`
 
-Función que recalcula `points_awarded` de todas las predicciones de un partido.
-Llamada por trigger AFTER UPDATE OF `finalized_at` en `matches`.
+Función que recalcula `points_awarded` de todas las predicciones de un partido. Lee puntos base + multiplicadores desde `app_config.scoring_rules` (jsonb).
+
+**Trigger `on_match_result_set`:** AFTER UPDATE OF `score_a`, `score_b`, **`finalized_at`** en `matches`. Escucha las 3 columnas (no solo `finalized_at`) para que cualquier corrección posterior de un resultado dispare el recálculo automático. Alineado con doc 04: "si un resultado se carga mal y se corrige, los puntajes se recalculan para todos".
 
 Pseudocódigo:
 
 ```
-1. Obtener score real del match
-2. Para cada predicción del match:
+1. Obtener score y stage del match. Si score es null, return (no hay resultado todavía).
+2. Leer puntos base + multiplicador del stage desde app_config.scoring_rules.
+3. Para cada predicción del match:
    - Si pred_a = score_a AND pred_b = score_b: puntos exactos
-   - Sino si ganador acertado AND diferencia de goles acertada: puntos parciales 1
-   - Sino si ganador acertado o empate acertado: puntos parciales 2
+   - Sino si (pred_a - pred_b) = (score_a - score_b): puntos winner_and_diff
+   - Sino si sign(pred_a - pred_b) = sign(score_a - score_b): puntos winner_or_draw
    - Sino: 0 puntos
-   - Aplicar multiplicador según stage
-3. UPDATE predictions SET points_awarded = ...
+   - Multiplicar por multiplicador del stage. Round half-up al int más cercano
+     (5 pts × 1.5 = 7.5 → 8).
+4. UPDATE predictions SET points_awarded = ...
 ```
 
 ### `recalculate_bonus_points()`
 
-Función para invocar al terminar el torneo. Solo admin.
+**Stub hasta T-017+.** Firma declarada (`returns void`, body vacío) para que la API quede establecida desde la migración inicial. La lógica real (cálculo de puntos por campeón / subcampeón / goleador / semifinalistas, con los puntajes del doc 04) se implementa cuando aterricen los bonus y al cierre del torneo. Invocación manual por admin al terminar el Mundial.
 
-## Vista materializada (opcional)
-
-Para el ranking, se puede usar una vista normal:
+## Vista `ranking`
 
 ```sql
-create view ranking as
+create view ranking
+with (security_invoker = true)
+as
 select
   p.id,
   p.alias,
   p.avatar_url,
-  coalesce(sum(pr.points_awarded), 0) + coalesce(bp.points_awarded, 0) as total_points
+  coalesce(sum(pr.points_awarded), 0) + coalesce(max(bp.points_awarded), 0) as total_points
 from profiles p
 left join predictions pr on pr.user_id = p.id
 left join bonus_predictions bp on bp.user_id = p.id
-group by p.id, p.alias, p.avatar_url, bp.points_awarded
+group by p.id, p.alias, p.avatar_url
 order by total_points desc;
 ```
 
-Si hay performance issues (no debería con 20 usuarios), pasar a materialized view + refresh post-trigger.
+- `security_invoker = true` (PG15+): la view se ejecuta con permisos del caller, respetando las RLS policies de las tablas subyacentes.
+- `max(bp.points_awarded)` en vez de incluir esa columna en el GROUP BY: equivalente porque `bonus_predictions.user_id` es PK (hay 0 o 1 fila por user), pero más limpio.
+
+Si en algún momento hay problemas de performance (no debería con ~20 usuarios), pasar a materialized view + refresh post-trigger.
 
 ## Datos de seed
 
