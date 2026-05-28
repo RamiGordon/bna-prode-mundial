@@ -6,11 +6,12 @@
 
 ## Estado actual: NINGUNA TAREA EN PROGRESO
 
-Próximo paso: levantar **T-009 (migraciones SQL: tablas + RLS + triggers según `docs/03-data-model.md`)** del `backlog.md`. Abre Sesión 3 / día 3.
+Próximo paso: levantar **T-010 (seed de 48 selecciones del Mundial 2026)** del `backlog.md`. Sigue Sesión 3 / día 3.
 
-### Pendientes off-band heredados (los hace Rami cuando pueda, no bloquean T-009)
+### Pendientes off-band heredados (los hace Rami cuando pueda, no bloquean T-010)
 
 - Agregar las export lines de `nvm` al `~/.zshrc` para que `nvm` esté disponible en terminales nuevas. Las imprime `brew info nvm`. (de T-004)
+- **Promover a admin manualmente:** después del primer login (ya hecho en T-006), abrir el SQL editor del dashboard de Supabase y correr `update profiles set is_admin = true where id = '<tu uuid>';`. Necesario para poder cargar teams/matches/resultados desde la app cuando llegue T-024. Mientras tanto, los seeds de T-010/T-011 los aplicamos vía `psql` con `SUPABASE_DATABASE_URL` (rol `postgres` que bypassea RLS).
 
 ---
 

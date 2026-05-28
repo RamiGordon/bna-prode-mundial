@@ -22,7 +22,7 @@ Tareas pendientes ordenadas por prioridad. Cuando se arranca una, se mueve a `in
 
 ## Sesión 3 — Schema de datos (Día 3)
 
-- [ ] **T-009** Migraciones SQL: tablas + RLS + triggers según `docs/03-data-model.md`
+- [x] **T-009** Migraciones SQL: tablas + RLS + triggers según `docs/03-data-model.md`
 - [ ] **T-010** Seed de 48 selecciones del Mundial 2026
 - [ ] **T-011** Seed de 104 partidos con fixture oficial FIFA (fechas en UTC)
 
