@@ -13,7 +13,7 @@ Tareas pendientes ordenadas por prioridad. Cuando se arranca una, se mueve a `in
 ## Sesión 2 — Auth y navegación (Día 2)
 
 - [x] **T-006** Implementar auth con Supabase magic link (login + callback + logout)
-- [ ] **T-007** Proxy de Next que protege rutas autenticadas
+- [x] **T-007** Proxy de Next que protege rutas autenticadas
 - [x] **T-008** Layout base con navegación mobile-first (bottom nav o drawer)
 
 ## Auth hardening (a slotear antes del beta — T-038)
