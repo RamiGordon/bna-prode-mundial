@@ -112,3 +112,25 @@ Registro append-only de tareas terminadas. Última al final. Útil para ver prog
 - Pendientes off-band para Rami: ninguno nuevo. El de `nvm` en `.zshrc` (heredado de T-004) sigue abierto.
 - Próximo: **T-008 (layout base con navegación mobile-first)** cierra Sesión 2 / día 2.
 - Commits relevantes: 880dd87 + commit de cierre.
+
+## T-008 — Layout base con navegación mobile-first (2026-05-27, 19:51-21:12)
+- Resumen: agregado route group `src/app/(app)/` con `layout.tsx` que renderiza children + `<BottomNav />` fija abajo. 4 pantallas autenticadas como placeholders mínimos: `/partidos`, `/mis-predicciones`, `/ranking`, `/perfil`. `/perfil` aglutina logout (consume la action existente `src/app/actions.ts`) + email del user. `/` pasa de placeholder a `redirect("/partidos")`. Proxy ajustado para que logged-in en `/login` vaya directo a `/partidos` (evita el hop por `/`). Build + lint verdes. Test manual end-to-end OK (login → /partidos, navegación entre tabs marca activo, /login con sesión → /partidos, logout → /login, sin nav en /login ni /auth/callback, mobile-first 375px y 320px).
+- Decisiones tomadas:
+  - **Bottom nav, NO hamburguesa.** Con <7 secciones top-level, todas de uso frecuente durante 39 días, y mobile-first puro, no hay argumento para drawer. Bottom nav además gana en Fitts' law (pulgar alcanza sin reachear). Hamburguesa quedaría justificada solo si la cantidad de secciones creciera mucho (>7) o si las secciones secundarias fueran consultas raras y la principal monopolizara el uso (no es el caso).
+  - **Modelo A — 4 entradas planas:** Partidos · Predicciones · Ranking · Perfil. Descartados Modelo B (con Home/dashboard, redundante si Partidos abre en día actual y costaba día y medio extra del roadmap) y Modelo C (con FAB de "Predecir ya", complejidad de UI que el día-actual de Partidos cubre como banner sticky cuando se cablee la lista real en T-012).
+  - **Label "Predicciones" en el nav (sin "Mis")**, para que quepa parejo con los otros 3 (8/12/7/6 chars). El contexto deja claro que son del user porque no hay otra vista top-level de predicciones. El header **dentro** de la pantalla sí usa "Mis predicciones" completo. Alternativas descartadas: "Mis predics." (abreviación fea), "Mis predicciones" completo con wrap a 2 líneas (visualmente disparejo).
+  - **Iconos lucide:** `CalendarDays` (Partidos), `ClipboardList` (Predicciones), `Trophy` (Ranking), `CircleUserRound` (Perfil). Active state se distingue con color (`text-zinc-900` vs `text-zinc-500`) + `strokeWidth` mayor (2.25 vs 1.75), no con dot o bar adicional — simple y suficiente.
+  - **Route group `(app)/` con su propio layout, NO bottom nav en root layout.** Así `/login` y `/auth/callback` no la heredan. Trade-off mínimo: hay que duplicar `<main>` semánticamente (root layout tiene `<body><flex>`, (app)/layout tiene su propio `<main>`). Ventaja: separación clara entre superficie pública y privada.
+  - **`BottomNav` es Client Component** porque necesita `usePathname` para marcar item activo. El resto del árbol del layout es Server. Único cliente del shell.
+  - **`/perfil` come el logout, NO `actions.ts` se mueve.** La server action `logout` se queda en `src/app/actions.ts` como action global compartible; `/perfil` la importa. Mismo criterio que en T-006: si crecen las actions globales se reorganiza, no ahora.
+  - **`/` pasa a `redirect("/partidos")` puro** — sin chequeo de sesión, porque el proxy ya lo hace antes. El page-level guard defensivo que metimos en T-007 ya no aplica acá (el redirect no renderiza contenido, es seguro).
+  - **Proxy: redirect logged-in `/login` → `/partidos`** (antes mandaba a `/`). El hop por `/` seguía funcionando pero era un round-trip extra innecesario. Aprovecho la oportunidad para arreglarlo en la misma tarea (cambio de 2 caracteres).
+  - **Safe area iOS:** `pb-[env(safe-area-inset-bottom)]` en el `<nav>` para que el home indicator no se pise con el nav. `<main>` lleva `pb-[calc(3.5rem+env(safe-area-inset-bottom))]` para que el contenido scrollable no quede tapado por la nav fija. Verificado en responsive mode (sin iPhone real disponible para test físico — válido el approach).
+  - **Sin shadcn para BottomNav**: shadcn no tiene un componente oficial de bottom navigation. Se armó desde cero (~50 líneas con Tailwind + lucide). Si más adelante shadcn agrega uno, refactor trivial.
+  - **Mobile-first 375px base, verificado a 320px.** Labels truncan con `truncate` si llegaran a pasarse de ancho (no pasa con los 4 actuales pero queda defensivo).
+  - **Sin tests automatizados.** Auth/navegación no califica para el criterio de tests del proyecto (scoring, lock de predicciones, RLS).
+- Bugs encontrados:
+  - **2 vulns moderate de postcss** siguen heredadas de Next, ya documentadas en T-004/T-006/T-007. Sin novedades.
+- Pendientes off-band para Rami: ninguno nuevo. El de `nvm` en `.zshrc` (heredado de T-004) sigue abierto.
+- Próximo: **T-009 (migraciones SQL: tablas + RLS + triggers)** abre Sesión 3 / día 3.
+- Commits relevantes: 0de302c + commit de cierre.

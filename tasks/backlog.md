@@ -14,7 +14,7 @@ Tareas pendientes ordenadas por prioridad. Cuando se arranca una, se mueve a `in
 
 - [x] **T-006** Implementar auth con Supabase magic link (login + callback + logout)
 - [ ] **T-007** Proxy de Next que protege rutas autenticadas
-- [ ] **T-008** Layout base con navegación mobile-first (bottom nav o drawer)
+- [x] **T-008** Layout base con navegación mobile-first (bottom nav o drawer)
 
 ## Auth hardening (a slotear antes del beta — T-038)
 

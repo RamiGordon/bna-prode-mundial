@@ -6,9 +6,9 @@
 
 ## Estado actual: NINGUNA TAREA EN PROGRESO
 
-Próximo paso: levantar **T-008 (layout base con navegación mobile-first)** del `backlog.md`. Cierra Sesión 2 del roadmap.
+Próximo paso: levantar **T-009 (migraciones SQL: tablas + RLS + triggers según `docs/03-data-model.md`)** del `backlog.md`. Abre Sesión 3 / día 3.
 
-### Pendientes off-band heredados (los hace Rami cuando pueda, no bloquean T-008)
+### Pendientes off-band heredados (los hace Rami cuando pueda, no bloquean T-009)
 
 - Agregar las export lines de `nvm` al `~/.zshrc` para que `nvm` esté disponible en terminales nuevas. Las imprime `brew info nvm`. (de T-004)
 
